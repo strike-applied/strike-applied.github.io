@@ -105,6 +105,10 @@ html:not(.js) .nav-toggle { display: none; }
   html:not(.js) .nav a { font-family: var(--font-sans); font-size: var(--fs-meta); border: 0; padding: 0; }
 }
 
+/* Author names link to personal pages; keep them ink so blue stays the one accent. */
+.byline .names a { color: inherit; text-underline-offset: .2em; }
+.byline .names a:hover, .byline .names a:focus-visible { color: var(--blue); text-decoration: underline; }
+
 /* Teaser video: closes the masthead, ahead of Overview. */
 .teaser-video { margin-top: var(--space-5); }
 /* The teaser is a white, full-frame 16:9 film: fill the bordered frame so no
