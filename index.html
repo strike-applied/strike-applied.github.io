@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>STRIKE — Learning Visual State Transitions for Physical World Modeling</title>
+<meta name="description" content="Technical report for STRIKE: Learning Visual State Transitions for Physical World Modeling. Explore the framework, complete video comparisons and benchmark results.">
+<meta name="theme-color" content="#006CFA">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://strike-applied.github.io/">
+<meta property="og:image" content="https://strike-applied.github.io/assets/posters/strike-teaser.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:title" content="STRIKE: Learning Visual State Transitions for Physical World Modeling">
+<meta property="og:description" content="Predict how an interaction changes the scene. Use those visual states to generate the motion.">
+<link rel="canonical" href="https://strike-applied.github.io/">
+<link rel="icon" href="assets/brand/favicon.ico" sizes="32x32">
+<link rel="icon" href="assets/brand/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
+<script>document.documentElement.classList.add('js');</script>
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="stylesheet" href="assets/css/site.css?v=2026-10-06-2">
+</head>
+<body>
+<svg class="svg-library" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="m9 5 11 7-11 7Z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" stroke-width="3.5"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="m14 6-6 6 6 6"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="m10 6 6 6-6 6"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M5 17v4h14v-4"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24"><path d="M9 4H4v5m11-5h5v5M4 15v5h5m11-5v5h-5"/></symbol>
+  <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4 4v6h6M4.6 9a8 8 0 1 1-.1 6"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+</svg>
+<a class="skip-link" href="#top">Skip to content</a>
+<header class="site-header">
+  <div class="header-pill">
+    <a class="brand-mark" href="#top" aria-label="STRIKE, back to top"><span class="brand-word">STRIKE</span></a>
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav"><span></span><span></span><span></span></button>
+    <nav class="nav" id="nav" aria-label="Main navigation">
+      <a href="#overview">Overview</a><a href="#method">Method</a><a href="#comparisons">Videos</a><a href="#results">Results</a><a href="#ablation">Ablation</a><a href="#citation">Citation</a>
+    </nav>
+  </div>
+</header>
+<main id="top">
+  <section class="hero" aria-labelledby="paper-title">
+    <div class="wide">
+      <div class="hero-intro reveal">
+        <p class="eyebrow">Physical world modeling · Technical report</p>
+        <h1 id="paper-title"><span class="accent">STRIKE:</span> Learning Visual State Transitions for Physical World Modeling</h1>
+        <p class="lead">Predict how an interaction changes the scene.<br>Use those <mark class="hl">visual states</mark> to generate the motion.</p>
+        <div class="hero-meta">
+          <p class="byline"><span class="names">Wenbin Teng<sup>1,2</sup>, Tianshuo Xu<sup>1</sup>, Depu Meng<sup>1,§</sup>, Yuelei Li<sup>1</sup>, Quentin Herau<sup>1</sup>, Yihan Hu<sup>1</sup>, Yajie Zhao<sup>2</sup>, Wei Zhan<sup>1,3,†</sup></span></p>
+          <p class="affil"><sup>1</sup>Applied Intuition · <sup>2</sup>University of Southern California · <sup>3</sup>University of California, Berkeley</p>
+          <p class="affil"><sup>§</sup>Project Lead · <sup>†</sup>Corresponding author: <a href="mailto:wei.zhan@applied.co">wei.zhan@applied.co</a></p>
+          <div class="actions">
+            <!-- Replace with the arXiv link once the paper is public. -->
+            <span class="btn btn-disabled" aria-disabled="true">arXiv (on release)</span>
+          </div>
+        </div>
+      </div>
+      <div class="teaser-video reveal">
+        <div class="media-frame"><video autoplay data-autoplay muted loop playsinline controls preload="auto" poster="assets/posters/strike-teaser.jpg" src="assets/videos/teaser/strike-teaser.mp4" aria-label="STRIKE teaser: a Physics-IQ comparison, the state-transition idea, the three-stage pipeline on a RoboTwin2.0 episode, results on Physics-IQ Verified, PhyGenBench and RoboTwin2.0, and a wall of more STRIKE clips"></video></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="overview" aria-labelledby="overview-title">
+    <div class="wide">
+      <div class="split reveal">
+        <div class="split-text"><p class="eyebrow">Overview</p><h2 id="overview-title">States before<br>trajectories.</h2><p class="lead">Event-aligned supervision.<br>Timed visual states.<br>Conditional video dynamics.</p></div>
+        <div class="prose"><p id="paper-abstract">Physical world modeling requires predicting how interactions change a scene, not merely generating coherent motion. We propose STRIKE, a framework that explicitly learns visual state transitions and uses the predicted states to condition dense video generation. At its core is an image-based transition model trained on paired visual states to predict the next scene configuration from the current image, a transition specification, and elapsed time. A pretrained vision-language model supplies timed transition specifications, and recursive application of the learned transition model produces a sequence of future visual states. A conditional video diffusion model then generates the full rollout from these states and their temporal locations. This separates supervised state-transition learning from conditional dynamics modeling. Experiments on Physics-IQ Verified, PhyGenBench, Pisa-Experiments, and RoboTwin2.0 show improvements over the corresponding video-backbone baselines in benchmark measures of physical realism and manipulation-video fidelity. These results support learned visual state transitions as an effective intermediate representation for physical world modeling.</p></div>
+      </div>
+      <img class="diagram reveal" src="assets/figures/teaser.webp" alt="Predict the state change, then the motion" width="3600" height="1065" loading="lazy" decoding="async">
+    </div>
+  </section>
+
+  <section id="method" aria-labelledby="method-title">
+    <div class="wide">
+      <div class="reveal"><p class="eyebrow">01 / Framework</p><h2 id="method-title">From events to states to motion</h2><p class="lead prose">Two learned generative components, connected by a timed visual-state interface.</p>
+        <div class="contribs">
+          <article class="contrib"><div class="num">01</div><h3>Plan the events</h3><p>A pretrained vision-language model proposes what should change and when, from the initial image and task context.</p><p class="contrib-outcome">q<sub>ψ</sub> → transition + target time</p></article>
+          <article class="contrib"><div class="num">02</div><h3>Predict visual states</h3><p>The learned transition model recursively predicts each future state from the current image, event specification and elapsed time.</p><p class="contrib-outcome">q<sub>φ</sub> → sparse future states</p></article>
+          <article class="contrib"><div class="num">03</div><h3>Generate the dynamics</h3><p>A separately trained video model synthesizes the full rollout, softly conditioned on those states and their temporal locations.</p><p class="contrib-outcome">q<sub>θ</sub> → dense video rollout</p></article>
+        </div>
+      </div>
+      <img class="diagram reveal" src="assets/figures/architecture.webp" alt="Framework overview" width="3600" height="1159" loading="lazy" decoding="async">
+    </div>
+  </section>
+
+  <section id="comparisons" aria-labelledby="comparison-title">
+    <div class="wide">
+      <div class="reveal"><p class="eyebrow">02 / Qualitative results</p><h2 id="comparison-title">Watch the interactions unfold</h2></div>
+      <div id="interactive-gallery" class="tabs" hidden>
+        <div class="tabs-nav" role="tablist" aria-label="Video benchmark">
+          <span class="tabs-slider" aria-hidden="true"></span>
+          <button class="tab-btn is-active" role="tab" id="tab-physicsiq" aria-controls="gallery-panel" aria-selected="true" data-benchmark="physicsiq">Physics-IQ Verified</button>
+          <button class="tab-btn" role="tab" id="tab-phygenbench" aria-controls="gallery-panel" aria-selected="false" tabindex="-1" data-benchmark="phygenbench">PhyGenBench</button>
+          <button class="tab-btn" role="tab" id="tab-robotwin" aria-controls="gallery-panel" aria-selected="false" tabindex="-1" data-benchmark="robotwin">RoboTwin2.0</button>
+        </div>
+        <div id="gallery-panel" role="tabpanel" aria-labelledby="tab-physicsiq" tabindex="0">
+          <div class="gallery-topline"><span id="benchmark-setting"></span></div>
+          <div id="comparison-examples"></div>
+        </div>
+      </div>
+      <noscript><p class="table-lead">Open the benchmarks below to access all 52 complete clips. Enable JavaScript for the inline video gallery.</p>
+      <details class="content-details" id="video-library"><summary>All 12 examples · Direct video files</summary><details class="content-details"><summary>Physics-IQ Verified · 4 examples</summary><article class="library-case" id="clip-physicsiq-125"><h3>Mug breaks</h3><p class="prose">Static locked-off single-shot with fixed frame throughout filmed with constant framerate in real-time. The scene shows a realistic scientific demonstration. The scene only contains the described setup and actions. The blue-black grabber tool was holding the yellow ceramic mug. The blue-black grabber tool is suspended over the ceramic block in front of a white projection screen. The blue-black grabber releases the yellow ceramic mug over the concrete brick.</p><div class="actions"><a class="btn" href="assets/videos/physicsiq/125-cogvideox.mp4" target="_blank" rel="noopener">CogVideoX · 5B ↗</a><a class="btn" href="assets/videos/physicsiq/125-wan22.mp4" target="_blank" rel="noopener">Wan2.2 · 14B ↗</a><a class="btn" href="assets/videos/physicsiq/125-cosmos3.mp4" target="_blank" rel="noopener">Cosmos3 · Nano · 16B ↗</a><a class="btn" href="assets/videos/physicsiq/125-ours.mp4" target="_blank" rel="noopener">Ours · CogVideoX · 5B video ↗</a></div></article><article class="library-case" id="clip-physicsiq-9"><h3>Ball hits duck</h3><p class="prose">Static locked-off single-shot with fixed frame throughout filmed with constant framerate in real-time. The scene shows a realistic scientific demonstration. The scene only contains the described setup and actions. A light beige coffee table with a small yellow rubber duck on it. A mustard yellow couch is in the background. There is a black pipe that points from the left side to the right side of the table. The brown tennis ball rolls straight out of the black pipe and hits the rubber duck.</p><div class="actions"><a class="btn" href="assets/videos/physicsiq/009-cogvideox.mp4" target="_blank" rel="noopener">CogVideoX · 5B ↗</a><a class="btn" href="assets/videos/physicsiq/009-wan22.mp4" target="_blank" rel="noopener">Wan2.2 · 14B ↗</a><a class="btn" href="assets/videos/physicsiq/009-cosmos3.mp4" target="_blank" rel="noopener">Cosmos3 · Nano · 16B ↗</a><a class="btn" href="assets/videos/physicsiq/009-ours.mp4" target="_blank" rel="noopener">Ours · CogVideoX · 5B video ↗</a></div></article><article class="library-case" id="clip-physicsiq-1"><h3>Ball and block fall</h3><p class="prose">Static locked-off single-shot with fixed frame throughout filmed with constant framerate in real-time. The scene shows a realistic scientific demonstration. The scene only contains the described setup and actions. Two pillows are on a table and two grabber tools are positioned above them. The grabber tools release the brown tennis ball and the orange block.</p><div class="actions"><a class="btn" href="assets/videos/physicsiq/001-cogvideox.mp4" target="_blank" rel="noopener">CogVideoX · 5B ↗</a><a class="btn" href="assets/videos/physicsiq/001-wan22.mp4" target="_blank" rel="noopener">Wan2.2 · 14B ↗</a><a class="btn" href="assets/videos/physicsiq/001-cosmos3.mp4" target="_blank" rel="noopener">Cosmos3 · Nano · 16B ↗</a><a class="btn" href="assets/videos/physicsiq/001-ours.mp4" target="_blank" rel="noopener">Ours · CogVideoX · 5B video ↗</a></div></article><article class="library-case" id="clip-physicsiq-36"><h3>Block domino</h3><p class="prose">Static locked-off single-shot with fixed frame throughout filmed with constant framerate in real-time. The scene shows a realistic scientific demonstration. The scene only contains the described setup and actions. A row of colorful wooden blocks has been lined up on a wooden table next to a black platform. The wooden stick attached to the black platform rotates clockwise and hits the first block.</p><div class="actions"><a class="btn" href="assets/videos/physicsiq/036-cogvideox.mp4" target="_blank" rel="noopener">CogVideoX · 5B ↗</a><a class="btn" href="assets/videos/physicsiq/036-wan22.mp4" target="_blank" rel="noopener">Wan2.2 · 14B ↗</a><a class="btn" href="assets/videos/physicsiq/036-cosmos3.mp4" target="_blank" rel="noopener">Cosmos3 · Nano · 16B ↗</a><a class="btn" href="assets/videos/physicsiq/036-ours.mp4" target="_blank" rel="noopener">Ours · CogVideoX · 5B video ↗</a></div></article></details>
+<details class="content-details"><summary>PhyGenBench · 6 examples</summary><article class="library-case" id="clip-phygenbench-11"><h3>Stress</h3><p class="prose">A timelapse of a water-filled sponge being forcefully squeezed by hand, with the pressure intensifying rapidly over time.</p><div class="actions"><a class="btn" href="assets/videos/phygenbench/011-cogvideox.mp4" target="_blank" rel="noopener">CogVideoX · 5B ↗</a><a class="btn" href="assets/videos/phygenbench/011-opensora.mp4" target="_blank" rel="noopener">Open-Sora · v2 · 11B ↗</a><a class="btn" href="assets/videos/phygenbench/011-causalmotion.mp4" target="_blank" rel="noopener">CausalMotion · 13B ↗</a><a class="btn" href="assets/videos/phygenbench/011-cosmos3.mp4" target="_blank" rel="noopener">Cosmos3 · Nano · 16B ↗</a><a class="btn" href="assets/videos/phygenbench/011-ours.mp4" target="_blank" rel="noopener">Ours · CogVideoX · 5B video ↗</a></div></article><article class="library-case" id="clip-phygenbench-26"><h3>Elasticity</h3><p class="prose">A vibrant, elastic rubber ball is thrown forcefully towards the ground, capturing its dynamic interaction with the surface upon impact.</p><div class="actions"><a class="btn" href="assets/videos/phygenbench/026-cogvideox.mp4" target="_blank" rel="noopener">CogVideoX · 5B ↗</a><a class="btn" href="assets/videos/phygenbench/026-opensora.mp4" target="_blank" rel="noopener">Open-Sora · v2 · 11B ↗</a><a class="btn" href="assets/videos/phygenbench/026-causalmotion.mp4" target="_blank" rel="noopener">CausalMotion · 13B ↗</a><a class="btn" href="assets/videos/phygenbench/026-cosmos3.mp4" target="_blank" rel="noopener">Cosmos3 · Nano · 16B ↗</a><a class="btn" href="assets/videos/phygenbench/026-ours.mp4" target="_blank" rel="noopener">Ours · CogVideoX · 5B video ↗</a></div></article><article class="library-case" id="clip-phygenbench-92"><h3>Solidification</h3><p class="prose">A timelapse captures the transformation of a glass of juice as the temperature significantly drops to very low levels.</p><div class="actions"><a class="btn" href="assets/videos/phygenbench/092-cogvideox.mp4" target="_blank" rel="noopener">CogVideoX · 5B ↗</a><a class="btn" href="assets/videos/phygenbench/092-opensora.mp4" target="_blank" rel="noopener">Open-Sora · v2 · 11B ↗</a><a class="btn" href="assets/videos/phygenbench/092-causalmotion.mp4" target="_blank" rel="noopener">CausalMotion · 13B ↗</a><a class="btn" href="assets/videos/phygenbench/092-cosmos3.mp4" target="_blank" rel="noopener">Cosmos3 · Nano · 16B ↗</a><a class="btn" href="assets/videos/phygenbench/092-ours.mp4" target="_blank" rel="noopener">Ours · CogVideoX · 5B video ↗</a></div></article><article class="library-case" id="clip-phygenbench-99"><h3>Melting</h3><p class="prose">A timelapse captures the gradual transformation of ice cream as the temperature rises significantly.</p><div class="actions"><a class="btn" href="assets/videos/phygenbench/099-cogvideox.mp4" target="_blank" rel="noopener">CogVideoX · 5B ↗</a><a class="btn" href="assets/videos/phygenbench/099-opensora.mp4" target="_blank" rel="noopener">Open-Sora · v2 · 11B ↗</a><a class="btn" href="assets/videos/phygenbench/099-causalmotion.mp4" target="_blank" rel="noopener">CausalMotion · 13B ↗</a><a class="btn" href="assets/videos/phygenbench/099-cosmos3.mp4" target="_blank" rel="noopener">Cosmos3 · Nano · 16B ↗</a><a class="btn" href="assets/videos/phygenbench/099-ours.mp4" target="_blank" rel="noopener">Ours · CogVideoX · 5B video ↗</a></div></article><article class="library-case" id="clip-phygenbench-102"><h3>Liquefaction</h3><p class="prose">A timelapse captures the transformation as fog in a cold environment comes into contact with a warm car window.</p><div class="actions"><a class="btn" href="assets/videos/phygenbench/102-cogvideox.mp4" target="_blank" rel="noopener">CogVideoX · 5B ↗</a><a class="btn" href="assets/videos/phygenbench/102-opensora.mp4" target="_blank" rel="noopener">Open-Sora · v2 · 11B ↗</a><a class="btn" href="assets/videos/phygenbench/102-causalmotion.mp4" target="_blank" rel="noopener">CausalMotion · 13B ↗</a><a class="btn" href="assets/videos/phygenbench/102-cosmos3.mp4" target="_blank" rel="noopener">Cosmos3 · Nano · 16B ↗</a><a class="btn" href="assets/videos/phygenbench/102-ours.mp4" target="_blank" rel="noopener">Ours · CogVideoX · 5B video ↗</a></div></article><article class="library-case" id="clip-phygenbench-156"><h3>Redox property</h3><p class="prose">A timelapse captures the transformation of a clean and smooth piece of iron in a humid environment over decades.</p><div class="actions"><a class="btn" href="assets/videos/phygenbench/156-cogvideox.mp4" target="_blank" rel="noopener">CogVideoX · 5B ↗</a><a class="btn" href="assets/videos/phygenbench/156-opensora.mp4" target="_blank" rel="noopener">Open-Sora · v2 · 11B ↗</a><a class="btn" href="assets/videos/phygenbench/156-causalmotion.mp4" target="_blank" rel="noopener">CausalMotion · 13B ↗</a><a class="btn" href="assets/videos/phygenbench/156-cosmos3.mp4" target="_blank" rel="noopener">Cosmos3 · Nano · 16B ↗</a><a class="btn" href="assets/videos/phygenbench/156-ours.mp4" target="_blank" rel="noopener">Ours · CogVideoX · 5B video ↗</a></div></article></details>
+<details class="content-details"><summary>RoboTwin2.0 · 2 examples</summary><article class="library-case" id="clip-robotwin-151"><h3>Blocks ranking rgb</h3><p class="prose">Position red block, green block, and blue block on a surface from left to right in the order red, green, blue.</p><div class="actions"><a class="btn" href="assets/videos/robotwin/151-wan22.mp4" target="_blank" rel="noopener">Wan2.2 · 5B ↗</a><a class="btn" href="assets/videos/robotwin/151-ours.mp4" target="_blank" rel="noopener">Ours · Wan2.2 · 5B video ↗</a><a class="btn" href="assets/videos/robotwin/151-reference.mp4" target="_blank" rel="noopener">Ground truth · Upscaled reference ↗</a></div></article><article class="library-case" id="clip-robotwin-15"><h3>Place a2b right</h3><p class="prose">Place the plastic blue stapler with metal parts directly on the small rectangular tea box&#x27;s right.</p><div class="actions"><a class="btn" href="assets/videos/robotwin/015-wan22.mp4" target="_blank" rel="noopener">Wan2.2 · 5B ↗</a><a class="btn" href="assets/videos/robotwin/015-ours.mp4" target="_blank" rel="noopener">Ours · Wan2.2 · 5B video ↗</a><a class="btn" href="assets/videos/robotwin/015-reference.mp4" target="_blank" rel="noopener">Ground truth · Upscaled reference ↗</a></div></article></details></details>
+      </noscript>
+    </div>
+  </section>
+
+  <section id="results" aria-labelledby="results-title">
+    <div class="wide">
+      <div class="reveal"><p class="eyebrow">03 / Quantitative results</p><h2 id="results-title">Benchmark evaluation</h2></div>
+      <div class="tabs">
+        <div class="tabs-nav" id="results-nav" role="tablist" aria-label="Quantitative benchmark" hidden>
+          <span class="tabs-slider" aria-hidden="true"></span>
+          <button class="tab-btn is-active" role="tab" id="results-tab-physicsiq" aria-controls="results-physicsiq" aria-selected="true" data-results="physicsiq">Physics-IQ</button>
+          <button class="tab-btn" role="tab" id="results-tab-phygenbench" aria-controls="results-phygenbench" aria-selected="false" tabindex="-1" data-results="phygenbench">PhyGenBench</button>
+          <button class="tab-btn" role="tab" id="results-tab-pisa" aria-controls="results-pisa" aria-selected="false" tabindex="-1" data-results="pisa">PISA</button>
+          <button class="tab-btn" role="tab" id="results-tab-robotwin" aria-controls="results-robotwin" aria-selected="false" tabindex="-1" data-results="robotwin">RoboTwin2</button>
+        </div>
+        <div id="results-physicsiq" class="results-panel" role="tabpanel" aria-labelledby="results-tab-physicsiq" tabindex="0">
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Physics-IQ Verified results, scroll horizontally">
+        <table class="data"><caption>Physics-IQ Verified</caption><thead><tr><th scope="col">Model</th><th scope="col"># params</th><th scope="col">EFLOPs</th><th scope="col">Score ↑</th><th scope="col">S-IoU ↑</th><th scope="col">ST-IoU ↑</th><th scope="col">WS-IoU ↑</th></tr></thead><tbody><tr><th scope="row">Wan2.2</th><td>14B</td><td>49.100</td><td>34.2</td><td>50.3</td><td>25.2</td><td>29.9</td></tr><tr><th scope="row">Cosmos-Predict-2.5</th><td>2B</td><td>2.560</td><td>32.2</td><td>45.5</td><td>27.2</td><td>30.1</td></tr><tr><th scope="row">CogVideoX</th><td>5B</td><td>6.640</td><td>30.5</td><td>40.4</td><td>30.3</td><td>24.1</td></tr><tr><th scope="row">Cosmos3-Nano</th><td>16B</td><td>11.802</td><td>27.6</td><td>39.7</td><td>20.2</td><td>22.1</td></tr><tr><th scope="row">CoECT</th><td>20B+5B</td><td>29.600</td><td>19.9</td><td>27.6</td><td>23.2</td><td>14.8</td></tr><tr><th scope="row">Wan2.2-5B</th><td>5B</td><td>2.739</td><td>19.4</td><td>25.0</td><td>19.4</td><td>16.3</td></tr><tr><th scope="row">Open-Sora-v2</th><td>11B</td><td>5.035</td><td>19.0</td><td>27.0</td><td>21.2</td><td>10.1</td></tr><tr><th scope="row">LTX-Video</th><td>13B</td><td>1.152</td><td>18.4</td><td>31.0</td><td>14.1</td><td>15.0</td></tr><tr><th scope="row">CausalMotion</th><td>13B</td><td>0.395</td><td>12.7</td><td>19.0</td><td>15.0</td><td>8.1</td></tr><tr><th scope="row">Cosmos3-Super</th><td>64B</td><td>-</td><td>42.7</td><td>-</td><td>-</td><td>-</td></tr><tr><th scope="row">MiniMax-H3</th><td>33B</td><td>-</td><td>39.8</td><td>-</td><td>-</td><td>-</td></tr><tr class="is-best"><th scope="row">Ours (CogVideoX-5B)</th><td>20B+5B</td><td>10.02</td><td>41.9</td><td>46.7</td><td>53.5</td><td>36.0</td></tr><tr class="is-best"><th scope="row">Ours (Wan2.2-5B)</th><td>20B+5B</td><td>4.19</td><td>39.7</td><td>45.2</td><td>53.0</td><td>35.4</td></tr></tbody></table>
+      </div>
+    </div>
+<div id="results-phygenbench" class="results-panel" role="tabpanel" aria-labelledby="results-tab-phygenbench" tabindex="0">
+      <div class="table-wrap" tabindex="0" role="region" aria-label="PhyGenBench results, scroll horizontally">
+        <table class="data"><caption>PhyGenBench</caption><thead><tr><th scope="col">Method</th><th scope="col"># param</th><th scope="col">Mechanics ↑</th><th scope="col">Optics ↑</th><th scope="col">Thermal ↑</th><th scope="col">Material ↑</th><th scope="col">Average ↑</th></tr></thead><tbody><tr><th scope="row">VideoCrafter2</th><td>1.4B</td><td>40.00</td><td>58.00</td><td>28.89</td><td>34.17</td><td>42.08</td></tr><tr><th scope="row">LaVie</th><td>0.91B</td><td>29.17</td><td>50.67</td><td>23.33</td><td>32.50</td><td>35.63</td></tr><tr><th scope="row">Open-Sora v2</th><td>11B</td><td>55.00</td><td>66.67</td><td>47.78</td><td>50.83</td><td>56.25</td></tr><tr><th scope="row">LTX-Video</th><td>13B</td><td>45.83</td><td>65.33</td><td>43.33</td><td>37.50</td><td>49.37</td></tr><tr><th scope="row">DreamWorld</th><td>1.3B</td><td>54.17</td><td>64.67</td><td>51.11</td><td>43.33</td><td>54.17</td></tr><tr><th scope="row">Cosmos3-Nano</th><td>16B</td><td>57.50</td><td>75.33</td><td>48.89</td><td>46.67</td><td>58.75</td></tr><tr><th scope="row">Cosmos-Predict2.5</th><td>2B</td><td>60.00</td><td>68.00</td><td>52.22</td><td>43.33</td><td>56.87</td></tr><tr><th scope="row">PhysVid</th><td>1.7B</td><td>44.17</td><td>60.00</td><td>38.89</td><td>33.33</td><td>45.42</td></tr><tr><th scope="row">CausalMotion</th><td>13B</td><td>73.33</td><td>75.33</td><td>65.56</td><td>64.17</td><td>70.21</td></tr><tr><th scope="row">Wan2.2</th><td>5B</td><td>50.83</td><td>65.33</td><td>41.11</td><td>40.00</td><td>50.83</td></tr><tr><th scope="row">CogVideoX</th><td>5B</td><td>50.00</td><td>67.33</td><td>44.44</td><td>51.67</td><td>54.79</td></tr><tr><th scope="row">VideoREPA</th><td>5B</td><td>44.17</td><td>67.33</td><td>43.33</td><td>44.17</td><td>51.25</td></tr><tr><th scope="row">LaMo</th><td>5B</td><td>45.83</td><td>65.33</td><td>46.67</td><td>44.17</td><td>51.67</td></tr><tr class="is-best"><th scope="row">Ours (CogVideoX-5B)</th><td>20B+5B</td><td>69.17</td><td>80.67</td><td>81.11</td><td>76.67</td><td>76.91</td></tr><tr class="is-best"><th scope="row">Ours (Wan2.2-5B)</th><td>20B+5B</td><td>67.50</td><td>79.33</td><td>82.22</td><td>74.17</td><td>75.62</td></tr></tbody></table>
+      </div>
+    </div>
+<div id="results-pisa" class="results-panel" role="tabpanel" aria-labelledby="results-tab-pisa" tabindex="0">
+      <div class="table-wrap" tabindex="0" role="region" aria-label="PISA Experiments results, scroll horizontally">
+        <table class="data"><caption>PISA Experiments</caption><thead><tr><th scope="col">Method</th><th scope="col">L2 ↓</th><th scope="col">CD ↓</th><th scope="col">IoU ↑</th></tr></thead><tbody><tr><th scope="row">CausalMotion</th><td>0.1292</td><td>0.3435</td><td>0.0966</td></tr><tr><th scope="row">CogVideoX-5B</th><td>0.1180</td><td>0.3017</td><td>0.1481</td></tr><tr><th scope="row">Cosmos-Predict2.5</th><td>0.1373</td><td>0.3871</td><td>0.1467</td></tr><tr><th scope="row">Cosmos3-Nano</th><td>0.1250</td><td>0.3437</td><td>0.1361</td></tr><tr><th scope="row">LaMo-5B</th><td>0.1113</td><td>0.2888</td><td>0.1590</td></tr><tr><th scope="row">LTX-Video</th><td>0.1181</td><td>0.3071</td><td>0.1017</td></tr><tr><th scope="row">OpenSoraV2</th><td>0.1293</td><td>0.3310</td><td>0.0846</td></tr><tr class="is-best"><th scope="row">Ours (CogVideoX-5B)</th><td>0.0949</td><td>0.2495</td><td>0.1753</td></tr><tr class="is-best"><th scope="row">Ours (Wan2.2-5B)</th><td>0.1010</td><td>0.2637</td><td>0.1485</td></tr></tbody></table>
+      </div>
+    </div>
+<div id="results-robotwin" class="results-panel" role="tabpanel" aria-labelledby="results-tab-robotwin" tabindex="0">
+      <div class="table-wrap" tabindex="0" role="region" aria-label="RoboTwin2 val500 results, scroll horizontally">
+        <table class="data"><caption>RoboTwin2 val500</caption><thead><tr><th scope="col">Method</th><th scope="col">EWMScore ↑</th><th scope="col">Trajectory ↑</th><th scope="col">Interaction ↑</th><th scope="col">Perspectivity ↑</th><th scope="col">Instruction ↑</th><th scope="col">Semantic ↑</th></tr></thead><tbody><tr><th scope="row">OpenDW</th><td>44.26</td><td>0.0220</td><td>0.2556</td><td>0.6096</td><td>0.2080</td><td>0.8685</td></tr><tr><th scope="row">Ctrl-World</th><td>60.16</td><td>0.2217</td><td>0.5268</td><td>0.7776</td><td>0.4960</td><td>0.8782</td></tr><tr><th scope="row">CogVideoX-5B</th><td>58.04</td><td>0.2301</td><td>0.5432</td><td>0.7952</td><td>0.5180</td><td>0.8934</td></tr><tr><th scope="row">Wan2.2-5B</th><td>59.16</td><td>0.2372</td><td>0.5088</td><td>0.8040</td><td>0.4560</td><td>0.8866</td></tr><tr class="is-best"><th scope="row">Ours (CogVideoX-5B)</th><td>60.51</td><td>0.3306</td><td>0.5900</td><td>0.8160</td><td>0.5916</td><td>0.8975</td></tr><tr class="is-best"><th scope="row">Ours (Wan2.2-5B)</th><td>62.53</td><td>0.3368</td><td>0.6012</td><td>0.8448</td><td>0.6012</td><td>0.8943</td></tr></tbody></table>
+      </div>
+    </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="ablation" aria-labelledby="ablation-title">
+    <div class="wide">
+      <div class="reveal">
+        <p class="eyebrow">04 / Ablation study</p>
+        <h2 id="ablation-title">Learning the transition model matters</h2>
+        <p class="lead prose">With the same input and planned transition targets, the learned transition model produces more faithful key states and stronger downstream videos than pretrained Qwen-Image-Edit without transition training.</p>
+      </div>
+      <div class="ablation-carousel reveal" data-ablation-carousel>
+        <div class="ablation-carousel-bar">
+          <div class="ablation-carousel-controls" data-ablation-controls hidden>
+            <button type="button" data-ablation-direction="-1" aria-label="Previous ablation sample"><svg class="icon" aria-hidden="true"><use href="#i-left"/></svg></button>
+            <button type="button" data-ablation-direction="1" aria-label="Next ablation sample"><svg class="icon" aria-hidden="true"><use href="#i-right"/></svg></button>
+          </div>
+        </div>
+        <div class="ablation-track" data-ablation-track role="region" aria-label="Ablation study samples" tabindex="0">
+            <article class="ablation-card" data-ablation-card aria-label="Ablation sample: Block domino">
+              <p class="ablation-prompt">Static locked-off single-shot with fixed frame throughout filmed with constant framerate in real-time. The scene shows a realistic scientific demonstration. The scene only contains the described setup and actions. A row of colorful wooden blocks has been lined up on a wooden table next to a black platform. The wooden stick attached to the black platform rotates clockwise and hits the first block.</p>
+
+              <div class="ablation-row">
+                <div class="ablation-row-label">Transition text</div>
+                <div class="ablation-transition-list">
+                    <p class="ablation-transition-line"><span>State 1</span>Input first frame.</p>
+                    <p class="ablation-transition-line"><span>State 2</span>purple wooden block tips left after the stick impact and is leaning left in contact with the blue block.</p>
+                    <p class="ablation-transition-line"><span>State 3</span>wooden-block domino row finishes toppling from right to left and is collapsed leftward and resting on the wooden table.</p>
+                </div>
+              </div>
+
+              <div class="ablation-row">
+                <div class="ablation-row-label">Transition states</div>
+                <div class="ablation-method-grid">
+                  <section class="ablation-method ablation-method-ours" aria-label="Ours transition states">
+                    <header>Ours</header>
+                    <div class="ablation-frame-strip">
+                        <figure class="ablation-keyframe">
+                          <a href="assets/ablation/sample_0036_block-domino_right/ours/keyframes/kf0.png" target="_blank" rel="noopener noreferrer" aria-label="Open Ours state 1 (input image) for Block domino">
+                            <img src="assets/ablation/sample_0036_block-domino_right/ours/keyframes/kf0.png" alt="Input image (state 1) for Block domino" width="720" height="480" loading="lazy" decoding="async">
+                          </a>
+                          <figcaption>State 1</figcaption>
+                        </figure>
+                        <figure class="ablation-keyframe">
+                          <a href="assets/ablation/sample_0036_block-domino_right/ours/keyframes/kf1.png" target="_blank" rel="noopener noreferrer" aria-label="Open Ours state 2 for Block domino">
+                            <img src="assets/ablation/sample_0036_block-domino_right/ours/keyframes/kf1.png" alt="Ours predicted state 2 for Block domino" width="720" height="480" loading="lazy" decoding="async">
+                          </a>
+                          <figcaption>State 2</figcaption>
+                        </figure>
+                        <figure class="ablation-keyframe">
+                          <a href="assets/ablation/sample_0036_block-domino_right/ours/keyframes/kf2.png" target="_blank" rel="noopener noreferrer" aria-label="Open Ours state 3 for Block domino">
+                            <img src="assets/ablation/sample_0036_block-domino_right/ours/keyframes/kf2.png" alt="Ours predicted state 3 for Block domino" width="720" height="480" loading="lazy" decoding="async">
+                          </a>
+                          <figcaption>State 3</figcaption>
+                        </figure>
+                    </div>
+                  </section>
+                  <section class="ablation-method" aria-label="Without training transition states">
+                    <header>w/o training</header>
+                    <div class="ablation-frame-strip">
+                        <figure class="ablation-keyframe">
+                          <a href="assets/ablation/sample_0036_block-domino_right/without_training_qie/keyframes/kf0.png" target="_blank" rel="noopener noreferrer" aria-label="Open w/o training state 1 (input image) for Block domino">
+                            <img src="assets/ablation/sample_0036_block-domino_right/without_training_qie/keyframes/kf0.png" alt="Input image (state 1) for Block domino" width="720" height="480" loading="lazy" decoding="async">
+                          </a>
+                          <figcaption>State 1</figcaption>
+                        </figure>
+                        <figure class="ablation-keyframe">
+                          <a href="assets/ablation/sample_0036_block-domino_right/without_training_qie/keyframes/kf1.png" target="_blank" rel="noopener noreferrer" aria-label="Open w/o training state 2 for Block domino">
+                            <img src="assets/ablation/sample_0036_block-domino_right/without_training_qie/keyframes/kf1.png" alt="Without transition training predicted state 2 for Block domino" width="720" height="480" loading="lazy" decoding="async">
+                          </a>
+                          <figcaption>State 2</figcaption>
+                        </figure>
+                        <figure class="ablation-keyframe">
+                          <a href="assets/ablation/sample_0036_block-domino_right/without_training_qie/keyframes/kf2.png" target="_blank" rel="noopener noreferrer" aria-label="Open w/o training state 3 for Block domino">
+                            <img src="assets/ablation/sample_0036_block-domino_right/without_training_qie/keyframes/kf2.png" alt="Without transition training predicted state 3 for Block domino" width="720" height="480" loading="lazy" decoding="async">
+                          </a>
+                          <figcaption>State 3</figcaption>
+                        </figure>
+                    </div>
+                  </section>
+                </div>
+              </div>
+
+              <div class="ablation-row ablation-video-row">
+                <div class="ablation-row-label">Final video</div>
+                <div class="ablation-video-grid">
+                  <figure class="ablation-video-panel ablation-video-ours">
+                    <figcaption><span>Ours</span><span class="ablation-score">Physics-IQ <b>41.93</b></span></figcaption>
+                    <div class="media-frame"><video autoplay muted loop playsinline preload="metadata" poster="assets/ablation/sample_0036_block-domino_right/ours/keyframes/kf0.png" src="assets/ablation/sample_0036_block-domino_right/ours/video.mp4" aria-label="Ours final video for Block domino"></video></div>
+                  </figure>
+                  <figure class="ablation-video-panel">
+                    <figcaption><span>w/o training</span><span class="ablation-score">Physics-IQ <b>32.60</b></span></figcaption>
+                    <div class="media-frame"><video autoplay muted loop playsinline preload="metadata" poster="assets/ablation/sample_0036_block-domino_right/ours/keyframes/kf0.png" src="assets/ablation/sample_0036_block-domino_right/without_training_qie/video.mp4" aria-label="Without transition training final video for Block domino"></video></div>
+                  </figure>
+                </div>
+              </div>
+            </article>
+            <article class="ablation-card" data-ablation-card aria-label="Ablation sample: Ball rolls on glass">
+              <p class="ablation-prompt">Static locked-off single-shot with fixed frame throughout filmed with constant framerate in real-time. The scene shows a realistic scientific demonstration. The scene only contains the described setup and actions. A piece of clear glass resting on the edge of a light-colored wooden table against a plain white wall. The blue tennis ball rolls from the wooden table over the glass.</p>
+
+              <div class="ablation-row">
+                <div class="ablation-row-label">Transition text</div>
+                <div class="ablation-transition-list">
+                    <p class="ablation-transition-line"><span>State 1</span>Input first frame.</p>
+                    <p class="ablation-transition-line"><span>State 2</span>blue tennis ball rolls onto the glass and is fully supported by the glass surface.</p>
+                    <p class="ablation-transition-line"><span>State 3</span>blue tennis ball continues off the visible glass and is out of frame to the right.</p>
+                </div>
+              </div>
+
+              <div class="ablation-row">
+                <div class="ablation-row-label">Transition states</div>
+                <div class="ablation-method-grid">
+                  <section class="ablation-method ablation-method-ours" aria-label="Ours transition states">
+                    <header>Ours</header>
+                    <div class="ablation-frame-strip">
+                        <figure class="ablation-keyframe">
+                          <a href="assets/ablation/sample_0025_ball-rolls-on-glass_left/ours/keyframes/kf0.png" target="_blank" rel="noopener noreferrer" aria-label="Open Ours state 1 (input image) for Ball rolls on glass">
+                            <img src="assets/ablation/sample_0025_ball-rolls-on-glass_left/ours/keyframes/kf0.png" alt="Input image (state 1) for Ball rolls on glass" width="720" height="480" loading="lazy" decoding="async">
+                          </a>
+                          <figcaption>State 1</figcaption>
+                        </figure>
+                        <figure class="ablation-keyframe">
+                          <a href="assets/ablation/sample_0025_ball-rolls-on-glass_left/ours/keyframes/kf1.png" target="_blank" rel="noopener noreferrer" aria-label="Open Ours state 2 for Ball rolls on glass">
+                            <img src="assets/ablation/sample_0025_ball-rolls-on-glass_left/ours/keyframes/kf1.png" alt="Ours predicted state 2 for Ball rolls on glass" width="720" height="480" loading="lazy" decoding="async">
+                          </a>
+                          <figcaption>State 2</figcaption>
+                        </figure>
+                        <figure class="ablation-keyframe">
+                          <a href="assets/ablation/sample_0025_ball-rolls-on-glass_left/ours/keyframes/kf2.png" target="_blank" rel="noopener noreferrer" aria-label="Open Ours state 3 for Ball rolls on glass">
+                            <img src="assets/ablation/sample_0025_ball-rolls-on-glass_left/ours/keyframes/kf2.png" alt="Ours predicted state 3 for Ball rolls on glass" width="720" height="480" loading="lazy" decoding="async">
+                          </a>
+                          <figcaption>State 3</figcaption>
+                        </figure>
+                    </div>
+                  </section>
+                  <section class="ablation-method" aria-label="Without training transition states">
+                    <header>w/o training</header>
+                    <div class="ablation-frame-strip">
+                        <figure class="ablation-keyframe">
+                          <a href="assets/ablation/sample_0025_ball-rolls-on-glass_left/without_training_qie/keyframes/kf0.png" target="_blank" rel="noopener noreferrer" aria-label="Open w/o training state 1 (input image) for Ball rolls on glass">
+                            <img src="assets/ablation/sample_0025_ball-rolls-on-glass_left/without_training_qie/keyframes/kf0.png" alt="Input image (state 1) for Ball rolls on glass" width="720" height="480" loading="lazy" decoding="async">
+                          </a>
+                          <figcaption>State 1</figcaption>
+                        </figure>
+                        <figure class="ablation-keyframe">
+                          <a href="assets/ablation/sample_0025_ball-rolls-on-glass_left/without_training_qie/keyframes/kf1.png" target="_blank" rel="noopener noreferrer" aria-label="Open w/o training state 2 for Ball rolls on glass">
+                            <img src="assets/ablation/sample_0025_ball-rolls-on-glass_left/without_training_qie/keyframes/kf1.png" alt="Without transition training predicted state 2 for Ball rolls on glass" width="720" height="480" loading="lazy" decoding="async">
+                          </a>
+                          <figcaption>State 2</figcaption>
+                        </figure>
+                        <figure class="ablation-keyframe">
+                          <a href="assets/ablation/sample_0025_ball-rolls-on-glass_left/without_training_qie/keyframes/kf2.png" target="_blank" rel="noopener noreferrer" aria-label="Open w/o training state 3 for Ball rolls on glass">
+                            <img src="assets/ablation/sample_0025_ball-rolls-on-glass_left/without_training_qie/keyframes/kf2.png" alt="Without transition training predicted state 3 for Ball rolls on glass" width="720" height="480" loading="lazy" decoding="async">
+                          </a>
+                          <figcaption>State 3</figcaption>
+                        </figure>
+                    </div>
+                  </section>
+                </div>
+              </div>
+
+              <div class="ablation-row ablation-video-row">
+                <div class="ablation-row-label">Final video</div>
+                <div class="ablation-video-grid">
+                  <figure class="ablation-video-panel ablation-video-ours">
+                    <figcaption><span>Ours</span><span class="ablation-score">Physics-IQ <b>41.93</b></span></figcaption>
+                    <div class="media-frame"><video autoplay muted loop playsinline preload="metadata" poster="assets/ablation/sample_0025_ball-rolls-on-glass_left/ours/keyframes/kf0.png" src="assets/ablation/sample_0025_ball-rolls-on-glass_left/ours/video.mp4" aria-label="Ours final video for Ball rolls on glass"></video></div>
+                  </figure>
+                  <figure class="ablation-video-panel">
+                    <figcaption><span>w/o training</span><span class="ablation-score">Physics-IQ <b>32.60</b></span></figcaption>
+                    <div class="media-frame"><video autoplay muted loop playsinline preload="metadata" poster="assets/ablation/sample_0025_ball-rolls-on-glass_left/ours/keyframes/kf0.png" src="assets/ablation/sample_0025_ball-rolls-on-glass_left/without_training_qie/video.mp4" aria-label="Without transition training final video for Ball rolls on glass"></video></div>
+                  </figure>
+                </div>
+              </div>
+            </article>
+        </div>
+      </div>
+      <noscript><p class="table-lead">Open the <a href="assets/ablation/index.html">complete ablation comparison page</a> to inspect all original keyframes, videos and transition text.</p></noscript>
+    </div>
+  </section>
+  <section id="citation" aria-labelledby="citation-title">
+    <div class="wide">
+      <div class="reveal">
+        <p class="eyebrow">05 / Citation</p>
+        <h2 id="citation-title">Cite this work</h2>
+        <p class="lead prose">BibTeX citation coming soon.</p>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer">
+  <div class="wide">
+    <div class="foot-grid">
+      <div><a class="brand-mark" href="#top" aria-label="STRIKE, back to top"><span class="brand-word">STRIKE</span></a><p>Learning Visual State Transitions<br>for Physical World Modeling.</p></div>
+      <nav aria-label="Footer navigation"><a href="#overview">Overview</a> · <a href="#method">Method</a> · <a href="#comparisons">Videos</a> · <a href="#results">Results</a> · <a href="#ablation">Ablation</a> · <a href="#citation">Citation</a></nav>
+    </div>
+    <p class="copyright">STRIKE · Technical report</p>
+  </div>
+</footer>
+<dialog id="media-dialog" aria-labelledby="dialog-title"><div class="dialog-top"><h2 id="dialog-title"></h2><button id="dialog-close" class="btn" aria-label="Close expanded media">Close ×</button></div><div id="dialog-content"></div><div id="dialog-caption"></div></dialog>
+<script src="assets/js/main.js"></script>
+<script src="assets/site-data.js"></script>
+<script src="assets/js/supplementary.js"></script>
+<script src="assets/js/ablation.js"></script>
+</body>
+</html>

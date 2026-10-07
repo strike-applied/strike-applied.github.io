@@ -1,0 +1,230 @@
+/* ==========================================================================
+   Per-site overrides.
+   ---------------------------------------------------------------------------
+   styles.css is the shared design system — do NOT edit it. Put everything
+   specific to THIS site here, and build it ONLY from the existing design
+   tokens (--blue, --ink, --gray, the type/spacing scales). Never hard-code a
+   hex color or font stack that a token already covers.
+
+   Most sites need very little here. Examples of legitimate overrides:
+
+   .hero { padding-top: ...; }          // tweak masthead rhythm
+   #results .wide { max-width: 1120px; } // narrow one wide band
+   .my-diagram { border-top: 2px solid var(--blue); }  // a one-off motif
+
+   If you find yourself redefining a color or a whole component, stop — reuse a
+   token or a component class from styles.css instead.
+   ========================================================================== */
+
+/* STRIKE content adapters. Typography, palette, components and section rhythm
+   remain in the unmodified template stylesheet. */
+[hidden] { display: none !important; }
+.svg-library { position: absolute; width: 0; height: 0; overflow: hidden; }
+.icon { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 1.7; flex: none; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+.gallery-topline, .video-heading, .dialog-top {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--space-2);
+}
+.media-note, .gallery-topline, .video-heading, .input-thumb, #dialog-caption {
+  font-family: var(--font-sans); font-size: var(--fs-meta);
+}
+.media-note, .gallery-topline, .video-detail { color: var(--gray); }
+.media-note { margin-top: var(--space-2); }
+.diagram { display: block; width: 100%; height: auto; margin-top: var(--space-4); }
+.figure-stage img { width: 100%; height: auto; }
+.figure-stage[data-figure] { cursor: zoom-in; }
+.figure figcaption a { white-space: nowrap; margin-left: var(--space-1); }
+
+.content-details { border-top: 1px solid var(--gray-line); margin-top: var(--space-4); }
+.content-details > summary {
+  padding-block: var(--space-2); cursor: pointer;
+  font-family: var(--font-sans); font-size: var(--fs-meta); font-weight: 600;
+}
+.content-details > summary:hover { color: var(--blue); }
+.content-details .content-details { margin-top: var(--space-2); }
+.library-case { padding-bottom: var(--space-3); }
+.library-case + .library-case { border-top: 1px solid var(--gray-line); }
+
+.gallery-topline { border-bottom: 1px solid var(--gray-line); padding-bottom: var(--space-2); }
+.comparison-example { padding-top: var(--space-3); scroll-margin-top: calc(var(--header-h) + var(--header-gap) + var(--space-3)); }
+.comparison-example + .comparison-example { margin-top: var(--space-5); padding-top: var(--space-4); border-top: 1px solid var(--gray-line); }
+.case-description { display: flex; align-items: flex-start; gap: var(--space-3); margin-bottom: var(--space-3); }
+.case-description-copy { flex: 1; min-width: 0; width: 100%; }
+.case-description h3 { margin-top: 0; }
+.case-description p { max-width: none; margin-bottom: 0; }
+.input-thumb { padding: 0; flex: 0 0 160px; border: 1px solid var(--gray-line); border-radius: var(--radius); overflow: hidden; background: var(--white); color: var(--ink); cursor: zoom-in; }
+.input-thumb img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: contain; background: var(--dark-mat); }
+.input-thumb span { display: block; padding: var(--space-1); }
+.comparison-videos { display: grid; grid-template-columns: repeat(var(--columns, 4), minmax(0, 1fr)); gap: var(--space-2); }
+.video-heading { margin-bottom: var(--space-1); align-items: flex-start; }
+.video-name, .video-detail { display: block; }
+.video-name { font-weight: 600; }
+.video-detail { font-size: var(--fs-eyebrow); }
+.expand-video { padding: var(--space-1); }
+
+.results-panel { min-width: 0; }
+table.data tbody th { font-weight: 400; }
+table.data tr.is-best th { font-weight: 600; }
+
+#media-dialog {
+  width: min(1280px, calc(100vw - var(--space-3))); max-height: calc(100dvh - var(--space-4));
+  padding: var(--space-3); border: 1px solid var(--gray-line); border-radius: var(--radius);
+  background: var(--white); color: var(--ink); box-shadow: var(--shadow-lift);
+}
+#media-dialog::backdrop { background: var(--dark-mat); opacity: 0.85; }
+.dialog-top { margin-bottom: var(--space-3); }
+.dialog-top h2 { font-size: var(--fs-h3); margin: 0; }
+.dialog-image { display: block; width: 100%; max-height: 70dvh; object-fit: contain; }
+.dialog-video { display: block; width: 100%; max-height: 70dvh; background: var(--dark-mat); }
+#dialog-caption { margin-top: var(--space-2); }
+#dialog-caption a + a { margin-left: var(--space-3); }
+body:has(#media-dialog[open]) { overflow: hidden; }
+
+/* Match the template's existing responsive breakpoints. */
+@media (max-width: 860px) {
+  .comparison-videos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .case-description { flex-direction: column; }
+  .input-thumb { flex-basis: auto; width: 160px; }
+  .comparison-videos { grid-template-columns: 1fr; }
+  .gallery-topline { align-items: flex-start; }
+  .tabs-nav { max-width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .tabs-slider, .tab-btn, .btn { transition: none; }
+}
+html:not(.js) .nav-toggle { display: none; }
+@media (max-width: 820px) {
+  html:not(.js) .site-header { position: static; }
+  html:not(.js) .header-pill { height: auto; }
+  html:not(.js) .nav { position: static; opacity: 1; visibility: visible; pointer-events: auto; padding: var(--space-1); flex-direction: row; flex-wrap: wrap; gap: var(--space-2); margin-left: auto; }
+  html:not(.js) .nav a { font-family: var(--font-sans); font-size: var(--fs-meta); border: 0; padding: 0; }
+}
+
+/* Teaser video: closes the masthead, ahead of Overview. */
+.teaser-video { margin-top: var(--space-5); }
+/* The teaser is a white, full-frame 16:9 film: fill the bordered frame so no
+   sub-pixel sliver of the dark mat shows at its edges. */
+.teaser-video .media-frame video { object-fit: cover; }
+
+/* Ablation carousel: compact prompt, state text, keyframes and looping videos. */
+.ablation-carousel { margin-top: var(--space-4); }
+.ablation-carousel-bar {
+  display: flex; justify-content: flex-end; margin-bottom: var(--space-2);
+}
+.ablation-carousel-controls { display: flex; align-items: center; gap: var(--space-1); }
+.ablation-carousel-controls button {
+  display: grid; width: 2.4rem; height: 2.4rem; padding: 0; place-items: center;
+  border: 1px solid var(--gray-line); border-radius: 50%;
+  color: var(--ink); background: var(--white); cursor: pointer;
+  transition: border-color .2s ease, color .2s ease, background .2s ease;
+}
+.ablation-carousel-controls button:hover:not(:disabled) {
+  border-color: var(--blue); color: var(--blue); background: var(--blue-wash);
+}
+.ablation-carousel-controls button:disabled { opacity: .35; cursor: default; }
+.ablation-track {
+  display: flex; gap: var(--space-2); overflow-x: auto;
+  padding: 1px 1px var(--space-2); scroll-behavior: smooth;
+  scroll-padding-inline: 1px; scroll-snap-type: x mandatory;
+  scrollbar-width: thin; scrollbar-color: var(--blue-muted) transparent;
+}
+.ablation-card {
+  flex: 0 0 calc(100% - var(--space-4)); min-width: 0; overflow: hidden;
+  border: 1px solid var(--gray-line); border-radius: var(--radius);
+  background: var(--white); scroll-snap-align: start; scroll-snap-stop: always;
+}
+.ablation-prompt {
+  max-width: none; margin: 0; padding: var(--space-3);
+  color: var(--ink); font-size: var(--fs-body); line-height: 1.6;
+}
+.ablation-row {
+  display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: var(--space-3);
+  padding: var(--space-3); border-top: 1px solid var(--gray-line);
+}
+.ablation-row-label {
+  display: flex; flex-direction: column; align-items: flex-start; gap: .25rem;
+  color: var(--ink); font-family: var(--font-sans); font-size: var(--fs-meta); font-weight: 600;
+}
+.ablation-transition-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-2); }
+.ablation-transition-line {
+  max-width: none; margin: 0; padding: var(--space-2);
+  border: 1px solid var(--gray-line); border-radius: var(--radius);
+  background: var(--gray-soft); color: var(--ink); font-size: var(--fs-meta); line-height: 1.6;
+}
+.ablation-transition-line span {
+  display: block; margin-bottom: var(--space-1); color: var(--blue);
+  font-family: var(--font-mono); font-size: var(--fs-eyebrow); font-weight: 600;
+  letter-spacing: .05em; text-transform: uppercase;
+}
+.ablation-method-grid, .ablation-video-grid {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2);
+}
+.ablation-method {
+  min-width: 0; padding: var(--space-2); border: 1px solid var(--gray-line);
+  border-radius: var(--radius); background: var(--gray-soft);
+}
+.ablation-method-ours { border-color: var(--blue); background: var(--blue-wash); }
+.ablation-method > header {
+  margin-bottom: var(--space-2); color: var(--ink);
+  font-family: var(--font-sans); font-size: var(--fs-body); font-weight: 600;
+}
+.ablation-method-ours > header { color: var(--blue); }
+.ablation-frame-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-1); }
+.ablation-keyframe { min-width: 0; margin: 0; }
+.ablation-keyframe a {
+  display: block; overflow: hidden; border-radius: calc(var(--radius) * .7); background: var(--dark-mat);
+}
+.ablation-keyframe img {
+  display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: contain;
+}
+.ablation-keyframe figcaption {
+  margin-top: var(--space-1); padding: 0; border-top: 0; color: var(--gray);
+  font-family: var(--font-sans); font-size: var(--fs-eyebrow); text-transform: uppercase;
+}
+.ablation-video-panel {
+  min-width: 0; margin: 0; padding: var(--space-2);
+  border: 1px solid var(--gray-line); border-radius: var(--radius); background: var(--gray-soft);
+}
+/* Video titles sit above the media; do not inherit the global caption rule. */
+.ablation-video-panel > figcaption {
+  display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-2);
+  padding: 0; border-top: 0;
+  margin: 0 0 var(--space-2); color: var(--ink);
+  font-family: var(--font-sans); font-size: var(--fs-body); font-weight: 600;
+}
+/* Full-benchmark Physics-IQ score, top right of each Final video panel. */
+.ablation-score {
+  color: var(--gray); font-family: var(--font-sans); font-size: var(--fs-meta); font-weight: 400; white-space: nowrap;
+}
+.ablation-score b {
+  margin-left: .3em; color: var(--ink);
+  font-family: var(--font-display); font-size: var(--fs-h3); font-weight: 600;
+}
+.ablation-video-ours .ablation-score b { color: var(--blue); }
+.ablation-video-ours { border-color: var(--blue); background: var(--blue-wash); }
+.ablation-video-ours > figcaption { color: var(--blue); }
+.ablation-video-panel .media-frame {
+  aspect-ratio: 720 / 406; border: 0; border-radius: calc(var(--radius) * .7);
+  background: var(--dark-mat); box-shadow: none;
+}
+.ablation-video-panel video { width: 100%; height: 100%; object-fit: cover; }
+
+@media (max-width: 860px) {
+  .ablation-card { flex-basis: calc(100% - var(--space-2)); }
+  .ablation-row { grid-template-columns: 1fr; gap: var(--space-2); }
+  .ablation-row-label { flex-direction: row; align-items: baseline; flex-wrap: wrap; }
+}
+@media (max-width: 640px) {
+  .ablation-card { flex-basis: calc(100% - var(--space-1)); }
+  .ablation-prompt, .ablation-row { padding: var(--space-2); }
+  .ablation-transition-list, .ablation-method-grid, .ablation-video-grid { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ablation-track { scroll-behavior: auto; }
+  .ablation-carousel-controls button { transition: none; }
+}
